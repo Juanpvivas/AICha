@@ -45,6 +45,13 @@ Se implementará una arquitectura limpia y desacoplada basada en los siguientes 
 
 *   **Capa de Presentación (UI):** Desarrollada íntegramente en Jetpack Compose.
 *   **Patrón de Presentación:** Comunicación con la capa de datos mediante el patrón **MVVM** (Model-View-ViewModel).
-*   **Capa de Datos:** 
+*   **Capa de Datos:**
     *   Estructurada mediante el **Patrón Repositorio** (Repository Pattern).
     *   Los repositorios serán los encargados de abstraer y ocultar a la UI qué librerías concretas (Room, OpenAI SDK, etc.) se están utilizando para obtener o persistir la información.
+
+---
+
+## 4. Reglas Extras
+
+*   **Verificación de compilación:** Siempre que termines de generar un código, compílalo inmediatamente para verificar que no hay ningún problema de sintaxis o dependencias rotas antes de continuar, utiliza `compileDebugKotlin`.
+*   **Respeto a Gradle y Configuración de Dependencias:** Aunque pienses que los `build.gradle.kts` están incorrectos, los que tienes ahora mismo en contexto son válidos. Si tienes que modificar el `libs.versions.toml` o los ficheros gradle, simplemente añade lo nuevo que necesites, y no modifiques lo que ya existe.
