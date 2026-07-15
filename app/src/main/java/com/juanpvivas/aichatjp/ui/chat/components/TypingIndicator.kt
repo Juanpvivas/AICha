@@ -1,4 +1,4 @@
-package com.juanpvivas.aichatjp.ui.chat
+package com.juanpvivas.aichatjp.ui.chat.components
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.StartOffset

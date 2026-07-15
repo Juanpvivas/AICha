@@ -1,4 +1,4 @@
-package com.juanpvivas.aichatjp.ui.chat
+package com.juanpvivas.aichatjp.ui.chat.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background

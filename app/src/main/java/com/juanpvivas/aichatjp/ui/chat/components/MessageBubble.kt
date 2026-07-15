@@ -1,4 +1,4 @@
-package com.juanpvivas.aichatjp.ui.chat
+package com.juanpvivas.aichatjp.ui.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.juanpvivas.aichatjp.ui.chat.ChatMessage
 
 /**
  * Burbuja de mensaje con esquinas asimétricas: la esquina inferior del lado
