@@ -31,8 +31,8 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos en tu ent
 
 ### 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/tu-usuario/nombre-del-repositorio.git](https://github.com/tu-usuario/nombre-del-repositorio.git)
-cd nombre-del-repositorio
+git clone https://github.com/Juanpvivas/AICha.git
+cd AICha
 ```
 
 ### 2. Configurar la API Key de OpenAI
@@ -55,10 +55,20 @@ OPENAI_API_KEY="tu_api_key_aqui"
 
 ```text
 app/
-├── src/main/java/com/tu/paquete/
-│   ├── data/          # Repositorios, Base de datos (Room) y API de OpenAI
-│   ├── di/            # Módulos de inyección de dependencias con Hilt
-│   ├── ui/            # Vistas en Compose y ViewModels (MVVM)
+├── src/main/java/com/juanpvivas/aichatjp/
+│   ├── data/                 # Repositorios, Base de datos (Room) y API de OpenAI
+│   ├── di/                   # Módulos de inyección de dependencias con Hilt
+│   ├── ui/                   # Capa de Presentación (Compose)
+│   │   ├── chat/             # Funcionalidad del Chat (Package-by-Feature)
+│   │   │   ├── ChatRoute.kt  # Conector con estado (ViewModel, Navegación)
+│   │   │   ├── ChatScreen.kt # Interfaz Stateless (Scaffold principal)
+│   │   │   ├── ChatViewModel.kt
+│   │   │   ├── ChatUiState.kt# Estado de la pantalla (Loading, Success, Error)
+│   │   │   └── components/   # Composables específicos extraídos
+│   │   │       ├── ChatHeader.kt # Barra superior del chat
+│   │   │       ├── ChatContent.kt# Lista de mensajes (MessageBubble, etc.)
+│   │   │       └── ChatFooter.kt # Barra de entrada de texto (ChatInputBar)
+│   │   └── theme/            # Colores, tipografías y tema de Material 3
 │   └── MainActivity.kt
 └── build.gradle.kts
 ```
