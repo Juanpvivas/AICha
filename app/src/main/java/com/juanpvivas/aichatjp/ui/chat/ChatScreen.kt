@@ -16,32 +16,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,32 +44,36 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel = viewModel()
 ) {
-    var inputText by rememberSaveable { mutableStateOf("") }
+    fun sendMessage(text: String) {
+        viewModel.sendMessage(text)
+    }
 
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = { ChatTitle() },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+            Column {
+                TopAppBar(
+                    title = { ChatTitle() },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 )
-            )
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
         },
         bottomBar = {
-            ChatInputBar(
-                text = inputText,
-                onTextChange = { inputText = it },
-                onSendClick = {
-                    if (inputText.isNotBlank()) {
-                        viewModel.sendMessage(inputText)
-                        inputText = ""
-                    }
-                },
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .imePadding()
-            )
+            Column {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                Surface(color = MaterialTheme.colorScheme.surface) {
+                    ChatInputBar(
+                        onSend = ::sendMessage,
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .imePadding()
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         ChatContent(
@@ -171,47 +165,6 @@ private fun ChatMessageList(
     ) {
         items(messages.reversed()) { message ->
             MessageBubble(message = message)
-        }
-    }
-}
-
-@Composable
-private fun ChatInputBar(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onSendClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextField(
-            value = text,
-            onValueChange = onTextChange,
-            modifier = Modifier.weight(1f),
-            placeholder = { Text("Escribe un mensaje...") },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions(onSend = { onSendClick() }),
-            maxLines = 4
-        )
-        IconButton(
-            onClick = onSendClick,
-            modifier = Modifier.padding(start = 4.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Enviar",
-                modifier = Modifier.size(28.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }
