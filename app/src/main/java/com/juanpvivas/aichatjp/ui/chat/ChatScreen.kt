@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.juanpvivas.aichatjp.ui.theme.AIChaTheme
+import com.juanpvivas.aichatjp.ui.theme.AiChatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -189,7 +189,7 @@ private fun ChatInputBar(
 @Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
-    AIChaTheme {
+    AiChatTheme {
         ChatScreen()
     }
 }
