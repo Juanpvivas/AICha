@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.juanpvivas.aichatjp.ui.chat.ChatScreen
+import com.juanpvivas.aichatjp.ui.chat.ChatRoute
 import com.juanpvivas.aichatjp.ui.theme.AiChatTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AiChatTheme {
-                ChatScreen()
+                ChatRoute()
             }
         }
     }

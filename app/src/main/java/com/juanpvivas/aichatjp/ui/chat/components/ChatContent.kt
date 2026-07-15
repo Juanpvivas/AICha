@@ -2,16 +2,18 @@ package com.juanpvivas.aichatjp.ui.chat.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.juanpvivas.aichatjp.ui.chat.ChatMessage
+import com.juanpvivas.aichatjp.ui.chat.ChatUiState
 
 @Composable
 fun ChatContent(
-    messages: List<ChatMessage>,
+    uiState: ChatUiState,
     modifier: Modifier = Modifier
 ) {
-    if (messages.isEmpty()) {
-        EmptyChatMessage(modifier = modifier)
-    } else {
-        ChatMessageList(messages = messages, modifier = modifier)
+    when (uiState) {
+        is ChatUiState.Empty -> ChatEmptyMessage(modifier = modifier)
+        is ChatUiState.Success -> ChatMessageList(
+            messages = uiState.messages,
+            modifier = modifier
+        )
     }
 }

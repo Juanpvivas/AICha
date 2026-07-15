@@ -14,7 +14,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.juanpvivas.aichatjp.ui.chat.components.ChatContent
 import com.juanpvivas.aichatjp.ui.chat.components.ChatInputBar
 import com.juanpvivas.aichatjp.ui.chat.components.ChatTitle
@@ -23,13 +22,10 @@ import com.juanpvivas.aichatjp.ui.theme.AiChatTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
+    uiState: ChatUiState,
+    onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ChatViewModel = viewModel()
 ) {
-    fun sendMessage(text: String) {
-        viewModel.sendMessage(text)
-    }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -49,7 +45,7 @@ fun ChatScreen(
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Surface(color = MaterialTheme.colorScheme.surface) {
                     ChatInputBar(
-                        onSend = ::sendMessage,
+                        onSend = onSendMessage,
                         modifier = Modifier
                             .navigationBarsPadding()
                             .imePadding()
@@ -59,7 +55,7 @@ fun ChatScreen(
         }
     ) { innerPadding ->
         ChatContent(
-            messages = viewModel.messages,
+            uiState = uiState,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -69,6 +65,9 @@ fun ChatScreen(
 @Composable
 fun ChatScreenPreview() {
     AiChatTheme {
-        ChatScreen()
+        ChatScreen(
+            uiState = ChatUiState.Empty,
+            onSendMessage = {}
+        )
     }
 }
