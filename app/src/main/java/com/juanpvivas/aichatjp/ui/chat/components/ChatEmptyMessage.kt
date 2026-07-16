@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.juanpvivas.aichatjp.R
 
 @Composable
 fun ChatEmptyMessage(modifier: Modifier = Modifier) {
@@ -15,7 +17,7 @@ fun ChatEmptyMessage(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Escribe un mensaje para empezar",
+            text = stringResource(R.string.chat_empty_message),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
