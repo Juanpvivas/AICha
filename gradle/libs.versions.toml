@@ -12,6 +12,8 @@ composeBom = "2026.06.01"
 hilt = "2.60.1"
 hiltNavigationCompose = "1.2.0"
 ksp = "2.3.10"
+openaiKotlin = "4.1.0"
+ktorVersion = "3.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +35,8 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+openai-client = { group = "com.aallam.openai", name = "openai-client", version.ref = "openaiKotlin" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktorVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
