@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -22,8 +24,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val groqKey = project.findProperty("GROQ_API_KEY") as? String ?: ""
-        buildConfigField("String", "GROQ_API_KEY", "\"$groqKey\"")
+        val apiKey = gradleLocalProperties(rootDir, providers).getProperty("GROQ_API_KEY") ?: ""
+        buildConfigField("String", "GROQ_API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
