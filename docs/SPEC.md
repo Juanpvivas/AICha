@@ -82,6 +82,7 @@ ui/
     *   Cada componente debe ser independiente y reutilizable dentro de la pantalla. No deben acceder a variables globales ni al ViewModel.
     *   Si los componentes son muy pequeños (menos de 20 líneas), se pueden agrupar en un único archivo dentro de `components/` (ej: `ChatList.kt` puede albergar la lista y el ítem del chat si no son complejos).
 *   **Pragmatismo:** Si una pantalla es estática o muy simple, se permite omitir la carpeta `components/` y definir los sub-composables privados dentro del archivo `Screen.kt` para evitar sobreingeniería.
+*   **Gestión de Textos y Localización:** Queda estrictamente prohibido escribir textos directamente en duro (*hardcoded*) dentro de los archivos Compose. Todos los textos, títulos, mensajes de error y etiquetas deben declararse en los archivos de recursos correspondientes (`strings.xml`) y llamarse en la UI mediante `stringResource(R.string.identificador)`.
 
 ---
 

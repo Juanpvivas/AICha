@@ -75,13 +75,33 @@ app/
 
 ---
 
-## 🤝 Contribuciones
+## 🤝 Flujo de Trabajo y Contribuciones
 
-Si deseas colaborar con el proyecto:
-1. Lee detenidamente el [SPEC.md](./SPEC.md) para comprender las reglas de arquitectura.
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus commits respetando el patrón arquitectónico MVVM.
-4. Abre un Pull Request describiendo detalladamente tus cambios.
+Para mantener la rama principal (`main`) siempre estable y con código que compile perfectamente, seguimos un flujo de trabajo basado en **Feature Branches** (Ramas de Funcionalidad).
+
+### 🚫 Regla de Oro: Prohibido trabajar en `main`
+**Nunca** se debe escribir código o subir commits directamente a la rama `main`. Todo cambio, por pequeño que sea, debe seguir este proceso:
+
+1.  **Crear una rama de funcionalidad (Feature):**
+    Crea una rama desde `main` con un nombre descriptivo (usando minúsculas y guiones):
+    ```bash
+    git checkout main
+    git pull origin main
+    git checkout -b feature/nombre-de-tu-funcionalidad
+    ```
+
+2.  **Desarrollar y Compilar:**
+    Escribe tu código en la nueva rama. Antes de subir los cambios, recuerda compilar para validar que todo esté correcto:
+    ```bash
+    ./gradlew compileDebugKotlin
+    ```
+
+3.  **Subir la rama y crear un Pull Request (PR):**
+    Sube tu rama al repositorio remoto:
+    ```bash
+    git push origin feature/nombre-de-tu-funcionalidad
+    ```
+    Luego, abre un Pull Request en GitHub/GitLab hacia la rama `main` para que tu código sea revisado y fusionado.
 
 ---
 
