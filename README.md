@@ -35,12 +35,15 @@ git clone https://github.com/Juanpvivas/AICha.git
 cd AICha
 ```
 
-### 2. Configurar la API Key de OpenAI
-Para que la aplicación pueda comunicarse con la IA, debes proveer tu API Key.
-Crea un archivo llamado `local.properties` en la raíz de tu proyecto (si no existe ya) y añade la siguiente variable:
+## ⚙️ Configuración del Proyecto y API Key
 
+Para correr el proyecto, es necesario contar con una API Key gratuita de Groq.
+
+1.  Regístrate de forma gratuita en la consola oficial de desarrollo de Groq en [Groq Cloud](https://console.groq.com/) (Se recomienda usar registro directo por Google/Gmail).
+2.  Genera una nueva clave en la sección **API Keys**.
+3.  Crea un archivo de propiedades o configura tu variable de entorno local en tu entorno de desarrollo Android con la variable:
 ```properties
-OPENAI_API_KEY="tu_api_key_aqui"
+GROQ_API_KEY="TU_API_KEY_DE_GROQ_AQUI"
 ```
 
 ### 3. Compilar y Ejecutar

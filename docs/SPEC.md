@@ -35,8 +35,8 @@ Para garantizar la mantenibilidad y un rendimiento óptimo, se utilizarán las s
     *   **Room Database:** Para el guardado y recuperación local de las conversaciones previas (historial).
     *   *Nota de desarrollo:* Es mandatorio utilizar **KSP (Kotlin Symbol Processing)** en lugar de KAPT para los procesadores y compiladores de Room que generan código.
 *   **Inteligencia Artificial:**
-    *   **API de OpenAI:** Servicio backend para el procesamiento del modelo de lenguaje.
-    *   **open-ai kotlin (de Aallam):** Librería cliente de la comunidad de código abierto para realizar la conexión nativa con OpenAI.  
+    *   **API de Groq:** Proveedor del motor de inferencia de IA ultra veloz para el procesamiento del modelo de lenguaje.
+    *   **open-ai kotlin (de Aallam):** Librería cliente de la comunidad de código abierto para realizar la conexión nativa con la API. Se aprovecha que Groq implementa un estándar 100% compatible con el formato de peticiones de OpenAI.
         *Repositorio:* `https://github.com/Aallam/openai-kotlin`
 
 ---
