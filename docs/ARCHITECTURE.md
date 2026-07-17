@@ -68,7 +68,55 @@ com.juanpvivas.aichatjp/
 
 ---
 
-## 4. Capa de presentación: convención Route/Screen
+## 4. Estructura y convenciones de la capa de datos (`data/`)
+
+La capa de datos está dividida en tres sub-paquetes principales más un paquete de modelos compartidos:
+
+```text
+data/
+├── local/               # Room: entidades, DAOs, instancia de base de datos, migraciones
+├── remote/              # Cliente de Groq (openai-kotlin), DTOs, mappers DTO→Dominio
+├── repository/          # Implementaciones de repositorio (única capa que conoce local/ y remote/)
+└── model/               # Modelos de dominio compartidos entre repository y ui
+```
+
+**Reglas fundamentales:**
+
+- `remote/` es la única capa que conoce el SDK externo (en este caso `openai-kotlin` para Groq); nunca expone sus tipos (DTOs, clases del SDK) fuera de este paquete.
+- `repository/` consume tanto `local/` como `remote/`, y es la única que decide cuándo leer de cada una; expone interfaces y tipos del paquete `model/`, nunca DTOs ni entidades de Room.
+- `model/` contiene los modelos de dominio puros (sin dependencias de Room, SDK externo ni Android); son el "lenguaje" que usa toda la app.
+
+### 4.1 Convenciones de nomenclatura en `remote/`
+
+Para mantener consistencia y claridad, sigue estas convenciones al agregar nuevas integraciones remotas:
+
+| Tipo de archivo | Patrón de nombre | Ejemplo | Responsabilidad |
+|---|---|---|---|
+| **DataSource (interfaz)** | `<Entidad>RemoteDataSource` | `ChatRemoteDataSource` | Define qué operaciones remotas expone (métodos públicos sin lógica de SDK) |
+| **DataSource (implementación)** | `<Entidad>RemoteDataSourceImpl` | `ChatRemoteDataSourceImpl` | Implementa la interfaz usando el SDK concreto (openai-kotlin para Groq) |
+| **DTOs (request/response)** | `<Entidad>Dto`, `<Entidad>Request`, `<Entidad>Response` | `ChatMessageDto`, `SendMessageRequest`, `ChatResponse` | Clases que mapean directamente con el contrato de la API/SDK |
+| **Mapper DTO→Dominio** | `<Entidad>Mapper` o `<Entidad>MapperImpl` | `ChatMessageMapper` | Traduce DTOs a modelos de dominio; testeable y sin dependencias de Android |
+| **Cliente API/SDK wrapper** | `<Entidad>Service`, `<Entidad>Api`, `<Entidad>Client` | `GroqClient` (si es un wrapper) | Si encapsulas el SDK en un cliente propio, úsalo para abstraer cambios futuros de proveedor |
+
+**Ejemplo de estructura para la feature de Chat:**
+
+```text
+data/remote/
+├── ChatRemoteDataSource.kt              # Interfaz pública
+├── ChatRemoteDataSourceImpl.kt           # Implementación (usa openai-kotlin)
+├── dto/
+│   ├── ChatMessageDto.kt
+│   ├── ChatResponse.kt
+│   └── SendMessageRequest.kt
+└── mapper/
+    └── ChatMessageMapper.kt             # DTO → Dominio
+```
+
+**Regla de oro:** los DTOs y el SDK nunca cruzan hacia `model/`, `repository/` o `ui/`. Todo mapeo sucede dentro de `remote/`, y la salida es siempre un tipo del paquete `model/`.
+
+---
+
+## 5. Capa de presentación: convención Route/Screen
 
 Cada pantalla de la aplicación sigue esta estructura y respeta el patrón de desacoplamiento de Compose:
 
@@ -97,7 +145,7 @@ ui/
 
 ---
 
-## 5. Manejo de estado y concurrencia
+## 6. Manejo de estado y concurrencia
 
 - Todo `Flow` expuesto desde un ViewModel usa `stateIn(scope, SharingStarted.WhileSubscribed(5_000), initialValue)` para sobrevivir cambios de configuración sin fugas.
 - Los `Dispatchers` se inyectan (nunca `Dispatchers.IO` hardcodeado dentro de una clase) para poder sustituirlos en tests.
@@ -105,7 +153,7 @@ ui/
 
 ---
 
-## 6. Inyección de dependencias (Hilt)
+## 7. Inyección de dependencias (Hilt)
 
 - Un `@Module` por tipo de binding dentro de `di/` (`NetworkModule` para el cliente de Groq, `DatabaseModule` para Room, `RepositoryModule` para los bindings de repositorio).
 - Repositorios expuestos vía interfaz (`@Binds`), nunca la implementación concreta, para permitir fakes en tests.
@@ -114,7 +162,7 @@ ui/
 
 ---
 
-## 7. Persistencia local
+## 8. Persistencia local
 
 - **Room** para el historial de conversaciones, con **KSP** (no KAPT) para el procesador de anotaciones.
 - Migraciones obligatorias y testeadas ante cualquier cambio de esquema; no usar `fallbackToDestructiveMigration()` en producción.
@@ -122,7 +170,7 @@ ui/
 
 ---
 
-## 8. Integración con Groq
+## 9. Integración con Groq
 
 - El cliente de IA vive en `data/remote/`, usando el SDK `openai-kotlin` apuntando al endpoint compatible de Groq.
 - El repositorio de chat es responsable de construir el contexto histórico completo de la conversación antes de cada llamada (ver `SPEC.md` para el detalle de comportamiento de esta feature).
@@ -131,7 +179,7 @@ ui/
 
 ---
 
-## 9. Testing
+## 10. Testing
 
 | Capa | Herramientas | Qué se cubre |
 |---|---|---|
@@ -155,7 +203,7 @@ Además de los tests unitarios/instrumentados tradicionales, el proyecto usa **J
 
 ---
 
-## 10. Convenciones de código y calidad
+## 11. Convenciones de código y calidad
 
 - **Linting**: ktlint + detekt en pre-commit/CI, bloqueando merge si fallan.
 - **Naming**: `PascalCase` para clases/composables, `camelCase` para funciones/variables, sufijos consistentes (`Repository`, `ViewModel`, `UiState`, `Screen`, `Route`).
@@ -166,7 +214,7 @@ Además de los tests unitarios/instrumentados tradicionales, el proyecto usa **J
 
 ---
 
-## 11. CI/CD
+## 12. CI/CD
 
 Pipeline mínimo sugerido (a adaptar al proveedor real):
 
@@ -177,14 +225,14 @@ Pipeline mínimo sugerido (a adaptar al proveedor real):
 
 ---
 
-## 12. Seguridad
+## 13. Seguridad
 
 - La API Key de Groq nunca se sube al repositorio: vive en `local.properties` (ignorado por git) o en variables de entorno de CI.
 - R8/minificación habilitado en builds de release.
 
 ---
 
-## 13. Puntos abiertos
+## 14. Puntos abiertos
 
 - [ ] Estrategia de expiración/límite del historial de conversaciones (¿se guarda indefinidamente? ¿hay límite de mensajes o de conversaciones?).
 - [ ] Comportamiento ante error de la API de Groq a mitad de una respuesta en streaming (si se implementa streaming a futuro).
