@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.juanpvivas.aichatjp.core.AppLogger
 import com.juanpvivas.aichatjp.data.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ChatUiState>(ChatUiState.Empty)
@@ -46,7 +48,7 @@ class ChatViewModel @Inject constructor(
             ChatUiState.Success(messages, isLoading = true)
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             try {
                 val response = chatRepository.sendMessage(text)
                 AppLogger.i("Response received: ${response.take(100)}")
