@@ -1,19 +1,21 @@
-package com.juanpvivas.aichatjp.data
+package com.juanpvivas.aichatjp.data.repository.impl
 
+import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
-import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.juanpvivas.aichatjp.core.AppLogger
+import com.juanpvivas.aichatjp.data.repository.ChatRepository
 import javax.inject.Inject
 
-class ChatRepository @Inject constructor(
+class ChatRepositoryImpl @Inject constructor(
     private val openAI: OpenAI
-) {
+) : ChatRepository {
+
     private val conversationHistory = mutableListOf<ChatMessage>()
 
-    suspend fun sendMessage(userMessage: String): String {
+    override suspend fun sendMessage(userMessage: String): String {
         AppLogger.i("ChatRepository.sendMessage called")
 
         conversationHistory.add(
@@ -46,7 +48,7 @@ class ChatRepository @Inject constructor(
         return assistantContent
     }
 
-    fun clearHistory() {
+    override fun clearHistory() {
         conversationHistory.clear()
     }
 }
