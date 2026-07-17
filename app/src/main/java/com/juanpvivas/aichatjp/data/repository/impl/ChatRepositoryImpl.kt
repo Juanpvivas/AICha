@@ -1,38 +1,26 @@
 package com.juanpvivas.aichatjp.data.repository.impl
 
-import com.aallam.openai.api.chat.ChatMessage
-import com.aallam.openai.api.chat.ChatRole
 import com.juanpvivas.aichatjp.core.AppLogger
-import com.juanpvivas.aichatjp.data.remote.GroqApiClient
+import com.juanpvivas.aichatjp.data.remote.ChatRemoteDataSource
 import com.juanpvivas.aichatjp.data.repository.ChatRepository
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
-    private val groqApiClient: GroqApiClient
+    private val chatRemoteDataSource: ChatRemoteDataSource
 ) : ChatRepository {
 
-    private val conversationHistory = mutableListOf<ChatMessage>()
+    private val conversationHistory = mutableListOf<String>()
 
     override suspend fun sendMessage(userMessage: String): String {
         AppLogger.i("ChatRepository.sendMessage called")
 
-        conversationHistory.add(
-            ChatMessage(
-                role = ChatRole.User,
-                content = userMessage
-            )
-        )
+        conversationHistory.add(userMessage)
 
-        val assistantContent = groqApiClient.chatCompletion(conversationHistory)
+        val response = chatRemoteDataSource.sendMessage(conversationHistory)
 
-        conversationHistory.add(
-            ChatMessage(
-                role = ChatRole.Assistant,
-                content = assistantContent
-            )
-        )
+        conversationHistory.add(response.content)
 
-        return assistantContent
+        return response.content
     }
 
     override fun clearHistory() {
