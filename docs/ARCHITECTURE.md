@@ -114,6 +114,47 @@ data/remote/
 
 **Regla de oro:** los DTOs y el SDK nunca cruzan hacia `model/`, `repository/` o `ui/`. Todo mapeo sucede dentro de `remote/`, y la salida es siempre un tipo del paquete `model/`.
 
+### 4.2 Convenciones de nomenclatura en `local/`
+
+| Tipo de archivo | Patrón de nombre | Ejemplo | Responsabilidad |
+|---|---|---|---|
+| **Entidad Room** | `<Entidad>Entity` | `ChatMessageEntity`, `ConversationEntity` | Representa la tabla tal cual vive en SQLite; solo la conoce `local/` |
+| **DAO** | `<Entidad>Dao` | `ChatMessageDao`, `ConversationDao` | Define las queries de Room (`@Query`, `@Insert`, etc.) |
+| **Instancia de base de datos** | `<App>Database` | `AiChaDatabase` | `RoomDatabase` que agrupa todos los DAOs |
+| **Migraciones** | `MIGRATION_<from>_<to>` (constante) | `MIGRATION_1_2` | Una constante por salto de versión de esquema |
+| **LocalDataSource** (si se envuelve el DAO en vez de inyectarlo directo) | `<Entidad>LocalDataSource` / `<Entidad>LocalDataSourceImpl` | `ChatMessageLocalDataSource` | Opcional: útil si hay lógica extra sobre el DAO (combinar queries, cachear, etc.) |
+
+### 4.3 Convenciones de nomenclatura en `repository/`
+
+| Tipo de archivo | Patrón de nombre | Ejemplo |
+|---|---|---|
+| **Interfaz de repositorio** | `<Entidad>Repository` | `ChatRepository` |
+| **Implementación** | `<Entidad>RepositoryImpl` | `ChatRepositoryImpl` |
+
+La interfaz vive junto a (o cerca de) su implementación dentro de `repository/`, y es lo único que `ui/` y `di/` deberían referenciar directamente (nunca la clase `Impl`, salvo en el binding de Hilt).
+
+### 4.4 Convenciones en `model/`
+
+- Los modelos de dominio **no llevan sufijo** (a diferencia de `Entity`/`Dto`): `ChatMessage`, `Conversation`, no `ChatMessageModel` ni `ChatMessageDomain`. El nombre "limpio" es la señal de que es el modelo de dominio, el que se usa en `ui/` y `repository/`.
+- Errores de dominio: tipo sellado `AppError` con subtipos por categoría (`AppError.Network`, `AppError.Http`, `AppError.NoConnectivity`, `AppError.Unknown`). Evitar nombres genéricos como `Response<T>` para wrappers de resultado, ya que choca semánticamente con clases de librerías HTTP; preferir `Result<T>` (stdlib de Kotlin) o un `NetworkResult<T>` propio si se necesita más granularidad que `Result`.
+
+### 4.5 Convención de mapeo: extension functions en vez de clases `Mapper`
+
+Como alternativa (y en general preferida en proyectos Kotlin) a una clase `Mapper` dedicada, se recomienda usar **extension functions** con nombre estandarizado, ya que es más idiomático en Kotlin y reduce boilerplate:
+
+```kotlin
+// remote/mapper/ChatMessageMappers.kt
+fun ChatMessageDto.toDomain(): ChatMessage
+
+// local/mapper/ChatMessageMappers.kt
+fun ChatMessageEntity.toDomain(): ChatMessage
+fun ChatMessage.toEntity(): ChatMessageEntity
+```
+
+- Nombre de archivo: `<Entidad>Mappers.kt` (plural, ya que suele agrupar ida y vuelta de un mismo tipo).
+- Función siempre `to<Destino>()`: `toDomain()`, `toEntity()`, `toDto()`.
+- Se usa esta convención **o** una clase `<Entidad>Mapper` (§4.1) de forma consistente en todo el proyecto — mezclar ambos estilos para el mismo tipo de mapeo genera inconsistencia. Elegir una y documentarla aquí una vez decidida (por ahora, `Mapper` está definido en §4.1 como el default de `remote/`; si se adopta extension functions, actualizar esta sección para que ambas coincidan).
+
 ---
 
 ## 5. Capa de presentación: convención Route/Screen
