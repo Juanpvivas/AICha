@@ -3,7 +3,7 @@ package com.juanpvivas.aichatjp.ui.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juanpvivas.aichatjp.core.AppLogger
-import com.juanpvivas.aichatjp.data.ChatRepository
+import com.juanpvivas.aichatjp.data.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
