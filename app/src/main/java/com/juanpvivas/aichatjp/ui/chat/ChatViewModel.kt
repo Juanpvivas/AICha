@@ -80,6 +80,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun clearHistory() {
+        chatRepository.clearHistory()
+        _uiState.update { ChatUiState.Empty }
+        nextId = 0L
+    }
+
     private fun currentTime(): String =
         SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 }
