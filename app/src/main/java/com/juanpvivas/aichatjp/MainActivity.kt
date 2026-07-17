@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.juanpvivas.aichatjp.ui.chat.ChatRoute
+import com.juanpvivas.aichatjp.ui.navigation.AppNavGraph
 import com.juanpvivas.aichatjp.ui.theme.AiChatTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AiChatTheme {
-                ChatRoute()
+                AppNavGraph()
             }
         }
     }
