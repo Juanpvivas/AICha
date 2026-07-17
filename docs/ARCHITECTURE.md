@@ -138,8 +138,20 @@ ui/
 | Repositorio | JUnit + MockK + fixtures | Mapeo de datos, manejo de errores de red, lectura/escritura en Room (in-memory) |
 | ViewModel | JUnit + MockK + Turbine | Transiciones de `UiState`: un test por estado (loading/success/error/empty) |
 | UI | Compose Testing | Estados principales renderizados correctamente, interacciones clave |
+| Flujos end-to-end (agente IA) | Android CLI + Journeys (Gemini) | Journeys en lenguaje natural que navegan la app como lo haría un usuario real (ver §9.1) |
 
 - Los fakes/mocks compartidos entre features se agrupan en un paquete de testing común (ej. `testutil/` o `data/repository/fake/`) para no duplicarlos.
+
+### 9.1. Testing con Android CLI (Journeys)
+
+Además de los tests unitarios/instrumentados tradicionales, el proyecto usa **Journeys** (la funcionalidad de Android Studio/Android CLI basada en Gemini) para validar flujos completos de UI en lenguaje natural: se describe una secuencia de pasos (`<action>`) y el agente de IA los ejecuta sobre la app, tomando screenshots y razonando sobre lo que ve en pantalla, en vez de depender de selectores como Espresso/UI Automator.
+
+**Estado actual:**
+
+- Los archivos `.xml` de journeys viven en `app/src/androidTest/jurney/`, siguiendo la convención estándar de la herramienta (dentro del `androidTest` source set).
+- Se ejecutan pidiéndole al agente de IA (Android CLI) que localice la carpeta y corra el journey correspondiente sobre un emulador/dispositivo. Al estar ya dentro de `androidTest`, también quedan disponibles para correrse vía Gradle (ej. `./gradlew testJourneysTestDefaultDebugTestSuite`) si se decide integrarlos a CI más adelante.
+
+**Nomenclatura sugerida por journey:** un archivo por flujo crítico de usuario (ej. `send_message.xml`, `select_previous_conversation.xml`, `start_new_conversation.xml`). Cada journey debe describir un flujo de principio a fin (incluyendo verificaciones, no solo acciones), tal como el ejemplo actual de "Send Message Journey".
 
 ---
 

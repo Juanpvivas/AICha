@@ -108,6 +108,17 @@ Para mantener la rama principal (`main`) siempre estable y con código que compi
 
 ---
 
+## 🧪 Testing
+
+Además de los tests unitarios estándar (`./gradlew test`), el proyecto valida flujos completos de UI con **Journeys** (Android CLI + Gemini): descripciones en lenguaje natural que un agente de IA ejecuta directamente sobre la app, tomando screenshots y verificando el resultado en pantalla.
+
+- Los archivos de journey (`.xml`) viven en `app/src/androidTest/jurney/`, dentro del `androidTest` source set.
+- Se ejecutan pidiéndole al agente de IA (Android CLI) que localice la carpeta y corra el journey correspondiente sobre un emulador/dispositivo. Al vivir dentro de `androidTest`, también se pueden correr vía Gradle si se integran a CI más adelante.
+
+Más detalle de la herramienta en [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §9.1.
+
+---
+
 ## 📄 Licencia
 
 Este proyecto se distribuye bajo la licencia MIT.
