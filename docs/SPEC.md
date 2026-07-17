@@ -1,92 +1,59 @@
-# Especificación Técnica (SPEC.md) - App de Chat con IA
+# SPEC.md — Feature: Chat con IA
 
-Este documento detalla las especificaciones técnicas, requerimientos de comportamiento, arquitectura y organización de la interfaz de usuario para el desarrollo de la aplicación móvil de chat con Inteligencia Artificial.
-
----
-
-## 1. Requerimientos de la Aplicación
-
-### 1.1. Comportamiento y Funcionalidades
-*   **Pantalla Principal (Chat):**
-    *   Interfaz para iniciar y mantener conversaciones con la IA.
-    *   Flujo síncrono visual: por cada mensaje enviado por el usuario, la IA debe devolver una respuesta en pantalla.
-*   **Contexto de la Conversación:**
-    *   La IA debe recibir siempre como contexto histórico toda la conversación previa. Esto asegura que la generación de la nueva respuesta sea coherente con el hilo actual.
-*   **Historial de Conversaciones:**
-    *   Implementación de un menú lateral (Navigation Drawer) desplegable.
-    *   Permite visualizar y seleccionar conversaciones previas almacenadas.
-    *   En la parte superior del menú lateral, se debe incluir un botón de acción rápida para "Iniciar nueva conversación".
+Este documento especifica el comportamiento y los detalles específicos de la **feature de Chat** de la app AICha. Para la arquitectura transversal del proyecto (capas, convención Route/Screen, DI, testing, CI/CD), ver [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md); este documento no repite esas reglas, solo las particulariza para esta feature.
 
 ---
 
-## 2. Tecnologías (Tech Stack)
+## 1. Requerimientos de la feature
 
-Para garantizar la mantenibilidad y un rendimiento óptimo, se utilizarán las siguientes tecnologías:
+### 1.1. Pantalla principal (Chat)
 
-*   **UI & Diseño:**
-    *   **Jetpack Compose:** Sistema moderno de interfaces declarativas nativas para Android.
-    *   **Material 3:** Sistema de diseño guía para componentes visuales, tipografía y colores.
-*   **Lenguaje:**
-    *   **Kotlin:** Lenguaje principal de desarrollo.
-*   **Arquitectura y Comunicación:**
-    *   **ViewModels (Architecture Components):** Encargados de gestionar el estado de la UI y la comunicación bidireccional entre la vista y la capa de datos.
-    *   **Hilt:** Framework para la inyección de dependencias (Dependency Injection).
-*   **Persistencia de Datos:**
-    *   **Room Database:** Para el guardado y recuperación local de las conversaciones previas (historial).
-    *   *Nota de desarrollo:* Es mandatorio utilizar **KSP (Kotlin Symbol Processing)** en lugar de KAPT para los procesadores y compiladores de Room que generan código.
-*   **Inteligencia Artificial:**
-    *   **API de Groq:** Proveedor del motor de inferencia de IA ultra veloz para el procesamiento del modelo de lenguaje.
-    *   **open-ai kotlin (de Aallam):** Librería cliente de la comunidad de código abierto para realizar la conexión nativa con la API. Se aprovecha que Groq implementa un estándar 100% compatible con el formato de peticiones de OpenAI.
-        *Repositorio:* `https://github.com/Aallam/openai-kotlin`
+- Interfaz para iniciar y mantener conversaciones con la IA.
+- Flujo síncrono visual: por cada mensaje enviado por el usuario, la IA debe devolver una respuesta en pantalla.
+
+### 1.2. Contexto de la conversación
+
+- La IA debe recibir siempre como contexto histórico toda la conversación previa, para que la nueva respuesta sea coherente con el hilo actual.
+- Este historial se arma en la capa de repositorio (`data/repository/`, ver `ARCHITECTURE.md` §8), nunca se construye en la UI ni en el ViewModel.
+
+### 1.3. Historial de conversaciones
+
+- Menú lateral (Navigation Drawer) desplegable.
+- Permite visualizar y seleccionar conversaciones previas almacenadas localmente.
+- En la parte superior del menú lateral, botón de acción rápida para "Iniciar nueva conversación".
 
 ---
 
-## 3. Arquitectura del Software
+## 2. Proveedor de IA (específico de esta feature)
 
-Se implementará una arquitectura limpia y desacoplada basada en los siguientes componentes:
-
-*   **Capa de Presentación (UI):** Desarrollada íntegramente en Jetpack Compose.
-*   **Patrón de Presentación:** Comunicación con la capa de datos mediante el patrón **MVVM** (Model-View-ViewModel).
-*   **Capa de Datos:**
-    *   Estructurada mediante el **Patrón Repositorio** (Repository Pattern).
-    *   Los repositorios serán los encargados de abstraer y ocultar a la UI qué librerías concretas (Room, OpenAI SDK, etc.) se están utilizando para obtener o persistir la información.
+- **Motor de inferencia:** Groq.
+- **SDK cliente:** `openai-kotlin` (Aallam) — `https://github.com/Aallam/openai-kotlin`. Se usa porque Groq expone un endpoint 100% compatible con el formato de peticiones de OpenAI; **no se está usando la API de OpenAI**, solo su formato de request/response.
+- El cliente se configura apuntando al `baseUrl` de Groq (no al de OpenAI) y con la API Key de Groq.
 
 ---
 
-## 4. Estructura de Pantallas y Capa UI
+## 3. Pantallas involucradas
 
-Cada pantalla de la aplicación debe seguir una estructura de paquetes por funcionalidad (Package-by-Feature) y respetar el patrón de desacoplamiento de Compose:
+Siguiendo la convención Route/Screen de `ARCHITECTURE.md` §4:
 
-```text
-ui/
-└── <nombre_pantalla>/
-    ├── <NombrePantalla>Route.kt         # Conector con estado (ViewModel, Navegación)
-    ├── <NombrePantalla>Screen.kt        # Pantalla "Stateless" (Scaffold y estructura visual)
-    ├── <NombrePantalla>ViewModel.kt     # ViewModel de la pantalla
-    ├── <NombrePantalla>UiState.kt       # Estado de la UI (Representación de datos/cargas)
-    └── components/                      # Composables específicos de esta pantalla
-        ├── <NombrePantalla>Header.kt    # Barras superiores, títulos
-        ├── <NombrePantalla>Content.kt   # Listados, formularios, contenido principal
-        ├── <NombrePantalla>Item.kt      # Tarjetas o filas individuales
-        ├── <NombrePantalla>Empty.kt     # Pantallas de error o estado vacío
-        └── <NombrePantalla>Footer.kt    # Barra inferior, inputs, etc.
-```
+| Pantalla/componente | Paquete | Responsabilidad |
+|---|---|---|
+| Chat | `ui/chat/` | Envío de mensajes, renderizado de la conversación activa |
+| Historial (Drawer) | `ui/chat/components/` o `ui/history/` (a definir según si el drawer es propio de la feature de chat o una feature independiente) | Listado de conversaciones previas + botón "Nueva conversación" |
 
-**Reglas de organización y arquitectura UI:**
-
-*   **Patrón Route/Screen:**
-    *   El archivo `Route.kt` es el único que tiene acceso al `ViewModel`. Se encarga de recolectar el estado y de manejar los eventos de navegación hacia otras pantallas.
-    *   El archivo `Screen.kt` debe ser **completamente stateless** (sin estado propio del ViewModel). Solo recibe parámetros primitivos, el `UiState` y funciones lambda (`() -> Unit`) para los eventos. Esto garantiza que sea 100% compatible con el `@Preview` de Android Studio.
-*   **Gestión de Estado (`UiState`):** Toda pantalla compleja debe representar su estado mediante una clase o interfaz sellada (`sealed interface`) llamada `<NombrePantalla>UiState.kt` que represente estados como `Loading`, `Success` y `Error`.
-*   **Componentes en `components/`:**
-    *   Cada componente debe ser independiente y reutilizable dentro de la pantalla. No deben acceder a variables globales ni al ViewModel.
-    *   Si los componentes son muy pequeños (menos de 20 líneas), se pueden agrupar en un único archivo dentro de `components/` (ej: `ChatList.kt` puede albergar la lista y el ítem del chat si no son complejos).
-*   **Pragmatismo:** Si una pantalla es estática o muy simple, se permite omitir la carpeta `components/` y definir los sub-composables privados dentro del archivo `Screen.kt` para evitar sobreingeniería.
-*   **Gestión de Textos y Localización:** Queda estrictamente prohibido escribir textos directamente en duro (*hardcoded*) dentro de los archivos Compose. Todos los textos, títulos, mensajes de error y etiquetas deben declararse en los archivos de recursos correspondientes (`strings.xml`) y llamarse en la UI mediante `stringResource(R.string.identificador)`.
+> Pendiente de decisión: si el Navigation Drawer del historial se modela como un componente dentro de `ui/chat/` o como su propia feature (`ui/history/`) con su propio `Route`/`ViewModel`. Recomendado si el historial gana lógica propia (búsqueda, borrado, renombrado): feature independiente.
 
 ---
 
-## 5. Reglas Extras
+## 4. Persistencia (específico de esta feature)
 
-*   **Verificación de compilación:** Siempre que termines de generar un código, compílalo inmediatamente para verificar que no hay ningún problema de sintaxis o dependencias rotas antes de continuar, utiliza `compileDebugKotlin`.
-*   **Respeto a Gradle y Configuración de Dependencias:** Aunque pienses que los `build.gradle.kts` están incorrectos, los que tienes ahora mismo en contexto son válidos. Si tienes que modificar el `libs.versions.toml` o los ficheros gradle, simplemente añade lo nuevo que necesites, y no modifiques lo que ya existe.
+- **Room** almacena las conversaciones y sus mensajes (historial).
+- **Mandatorio usar KSP** (no KAPT) para los procesadores de Room, tal como se define en `ARCHITECTURE.md` §7.
+- Modelo mínimo esperado (a confirmar con el equipo antes de implementar el esquema definitivo): conversación (id, título/resumen, fecha) y mensaje (id, conversación asociada, rol emisor, contenido, timestamp).
+
+---
+
+## 5. Reglas de trabajo para esta feature
+
+- **Verificación de compilación:** siempre que se genere código para esta feature, compilar inmediatamente con `./gradlew compileDebugKotlin` para verificar que no haya errores de sintaxis o dependencias rotas antes de continuar.
+- **Respeto a Gradle:** aunque los `build.gradle.kts`/`libs.versions.toml` actuales parezcan incorrectos, se consideran válidos tal cual están. Si hay que modificarlos, solo agregar lo nuevo que se necesite, sin tocar lo ya existente.

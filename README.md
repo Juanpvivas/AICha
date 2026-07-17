@@ -1,6 +1,6 @@
 # App de Chat con IA (Android)
 
-Este es un cliente móvil nativo para Android que permite interactuar con la API de OpenAI, ofreciendo una experiencia de chat fluida con persistencia de historial local.
+Este es un cliente móvil nativo para Android que permite interactuar con modelos de lenguaje a través de **Groq**, ofreciendo una experiencia de chat fluida con persistencia de historial local. La integración se realiza mediante el SDK `openai-kotlin`, ya que Groq expone un endpoint compatible con el formato de peticiones de OpenAI (no se usa la API de OpenAI en sí).
 
 ---
 
@@ -10,7 +10,7 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos en tu ent
 
 *   **Android Studio** Ladybug (o superior).
 *   **JDK 17** o superior.
-*   Una **API Key de OpenAI** válida.
+*   Una **API Key de Groq** válida (gratuita, ver sección de configuración).
 
 ---
 
@@ -23,7 +23,7 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos en tu ent
 *   **Room (con KSP)** para base de datos local.
 *   **openai-kotlin (Aallam)** para la integración con IA.
 
-*Para detalles profundos sobre la arquitectura y la selección de tecnologías, por favor consulta el archivo [SPEC.md](./SPEC.md).*
+*Para la arquitectura general del proyecto (capas, convenciones, DI, testing) consulta [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md). Para el detalle funcional de la feature de Chat, consulta [SPEC.md](./SPEC.md).*
 
 ---
 
@@ -35,11 +35,11 @@ git clone https://github.com/Juanpvivas/AICha.git
 cd AICha
 ```
 
-## ⚙️ Configuración del Proyecto y API Key
+### 2. Obtener y configurar la API Key de Groq
 
-Para correr el proyecto, es necesario contar con una API Key gratuita de Groq.
+Para correr el proyecto, es necesario contar con una API Key gratuita de Groq (no de OpenAI).
 
-1.  Regístrate de forma gratuita en la consola oficial de desarrollo de Groq en [Groq Cloud](https://console.groq.com/) (Se recomienda usar registro directo por Google/Gmail).
+1.  Regístrate de forma gratuita en la consola oficial de desarrollo de Groq en [Groq Cloud](https://console.groq.com/) (se recomienda usar registro directo por Google/Gmail).
 2.  Genera una nueva clave en la sección **API Keys**.
 3.  Crea un archivo de propiedades o configura tu variable de entorno local en tu entorno de desarrollo Android con la variable:
 ```properties
@@ -59,7 +59,7 @@ GROQ_API_KEY="TU_API_KEY_DE_GROQ_AQUI"
 ```text
 app/
 ├── src/main/java/com/juanpvivas/aichatjp/
-│   ├── data/                 # Repositorios, Base de datos (Room) y API de OpenAI
+│   ├── data/                 # Repositorios, Base de datos (Room) y cliente de Groq (openai-kotlin)
 │   ├── di/                   # Módulos de inyección de dependencias con Hilt
 │   ├── ui/                   # Capa de Presentación (Compose)
 │   │   ├── chat/             # Funcionalidad del Chat (Package-by-Feature)
