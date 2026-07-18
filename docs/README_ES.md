@@ -23,7 +23,7 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos en tu ent
 *   **Room (con KSP)** para base de datos local.
 *   **openai-kotlin (Aallam)** para la integración con IA.
 
-*Para la arquitectura general del proyecto (capas, convenciones, DI, testing) consulta [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md). Para el detalle funcional de la feature de Chat, consulta [SPEC.md](./SPEC.md).*
+*Para la arquitectura general del proyecto (capas, convenciones, DI, testing) consulta [ARCHITECTURE.md](./ARCHITECTURE.md). Para el detalle funcional de la feature de Chat, consulta [../SPEC.md](../SPEC.md).*
 
 ---
 
@@ -83,33 +83,9 @@ app/
 
 ---
 
-## 🤝 Flujo de Trabajo y Contribuciones
+## 🤝 Contribuciones
 
-Para mantener la rama principal (`main`) siempre estable y con código que compile perfectamente, seguimos un flujo de trabajo basado en **Feature Branches** (Ramas de Funcionalidad).
-
-### 🚫 Regla de Oro: Prohibido trabajar en `main`
-**Nunca** se debe escribir código o subir commits directamente a la rama `main`. Todo cambio, por pequeño que sea, debe seguir este proceso:
-
-1.  **Crear una rama de funcionalidad (Feature):**
-    Crea una rama desde `main` con un nombre descriptivo (usando minúsculas y guiones):
-    ```bash
-    git checkout main
-    git pull origin main
-    git checkout -b feature/nombre-de-tu-funcionalidad
-    ```
-
-2.  **Desarrollar y Compilar:**
-    Escribe tu código en la nueva rama. Antes de subir los cambios, recuerda compilar para validar que todo esté correcto:
-    ```bash
-    ./gradlew compileDebugKotlin
-    ```
-
-3.  **Subir la rama y crear un Pull Request (PR):**
-    Sube tu rama al repositorio remoto:
-    ```bash
-    git push origin feature/nombre-de-tu-funcionalidad
-    ```
-    Luego, abre un Pull Request en GitHub/GitLab hacia la rama `main` para que tu código sea revisado y fusionado.
+¿Quieres contribuir? Consulta [../CONTRIBUTING.md](../CONTRIBUTING.md) (en inglés) para el flujo completo: nomenclatura de branches, convenciones de commits, requisitos de testing y guía de PRs.
 
 ---
 
@@ -120,7 +96,7 @@ Además de los tests unitarios estándar (`./gradlew test`), el proyecto valida 
 - Los archivos de journey (`.xml`) viven en `app/src/androidTest/jurney/`, dentro del `androidTest` source set.
 - Se ejecutan pidiéndole al agente de IA (Android CLI) que localice la carpeta y corra el journey correspondiente sobre un emulador/dispositivo. Al vivir dentro de `androidTest`, también se pueden correr vía Gradle si se integran a CI más adelante.
 
-Más detalle de la herramienta en [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §10.2.
+Más detalle de la herramienta en [ARCHITECTURE.md](./ARCHITECTURE.md) §10.2.
 
 ---
 

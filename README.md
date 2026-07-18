@@ -85,33 +85,9 @@ app/
 
 ---
 
-## 🤝 Workflow and Contributions
+## 🤝 Contributing
 
-To keep the main branch (`main`) always stable with perfectly compilable code, we follow a workflow based on **Feature Branches**.
-
-### 🚫 Golden Rule: Never work on `main`
-**Never** write code or commit directly to the `main` branch. Every change, no matter how small, must follow this process:
-
-1.  **Create a feature branch:**
-    Create a branch from `main` with a descriptive name (using lowercase and hyphens):
-    ```bash
-    git checkout main
-    git pull origin main
-    git checkout -b feature/your-feature-name
-    ```
-
-2.  **Develop and Compile:**
-    Write your code in the new branch. Before pushing changes, remember to compile to validate everything is correct:
-    ```bash
-    ./gradlew compileDebugKotlin
-    ```
-
-3.  **Push the branch and create a Pull Request (PR):**
-    Push your branch to the remote repository:
-    ```bash
-    git push origin feature/your-feature-name
-    ```
-    Then, open a Pull Request on GitHub/GitLab to the `main` branch so your code can be reviewed and merged.
+Want to contribute? Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for the full workflow: branch naming, commit conventions, testing requirements, and PR guidelines.
 
 ---
 
