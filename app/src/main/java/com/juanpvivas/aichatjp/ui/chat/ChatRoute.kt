@@ -27,7 +27,7 @@ fun ChatRoute(
         isHistoryLoading = isHistoryLoading,
         onSendMessage = chatViewModel::sendMessage,
         onConversationSelected = { conversationId ->
-            // TODO: Implementar carga de conversacion seleccionada
+            chatViewModel.loadConversation(conversationId)
         },
         onNewConversation = {
             chatViewModel.clearHistory()

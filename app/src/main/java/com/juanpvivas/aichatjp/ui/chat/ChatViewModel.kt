@@ -86,6 +86,34 @@ class ChatViewModel @Inject constructor(
         nextId = 0L
     }
 
+    fun loadConversation(conversationId: Long) {
+        AppLogger.i("Loading conversation: $conversationId")
+        viewModelScope.launch(ioDispatcher) {
+            try {
+                chatRepository.clearHistory()
+                val messages = chatRepository.getMessagesSync(conversationId)
+
+                if (messages.isEmpty()) {
+                    _uiState.update { ChatUiState.Empty }
+                } else {
+                    val chatMessages = messages.map { msg ->
+                        ChatMessage(
+                            id = nextId++,
+                            text = msg.content,
+                            fromUser = msg.isFromUser,
+                            time = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                .format(Date(msg.timestamp))
+                        )
+                    }
+                    _uiState.update { ChatUiState.Success(chatMessages) }
+                }
+            } catch (e: Exception) {
+                AppLogger.e("Error loading conversation", e)
+                _uiState.update { ChatUiState.Error(e.message ?: "Error cargando conversacion") }
+            }
+        }
+    }
+
     private fun currentTime(): String =
         SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 }
