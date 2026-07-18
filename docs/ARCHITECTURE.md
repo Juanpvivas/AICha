@@ -227,11 +227,29 @@ ui/
 | Repositorio | JUnit + MockK + fixtures | Mapeo de datos, manejo de errores de red, lectura/escritura en Room (in-memory) |
 | ViewModel | JUnit + MockK + Turbine | Transiciones de `UiState`: un test por estado (loading/success/error/empty) |
 | UI | Compose Testing | Estados principales renderizados correctamente, interacciones clave |
-| Flujos end-to-end (agente IA) | Android CLI + Journeys (Gemini) | Journeys en lenguaje natural que navegan la app como lo haría un usuario real (ver §9.1) |
+| Flujos end-to-end (agente IA) | Android CLI + Journeys (Gemini) | Journeys en lenguaje natural que navegan la app como lo haría un usuario real (ver §10.2) |
 
 - Los fakes/mocks compartidos entre features se agrupan en un paquete de testing común (ej. `testutil/` o `data/repository/fake/`) para no duplicarlos.
 
-### 9.1. Testing con Android CLI (Journeys)
+### 10.1. Ubicación y nomenclatura de tests unitarios
+
+Los tests unitarios (`ViewModel`, `Repository`, mappers, use cases) viven en el source set **`test`**, no en `androidTest` (ese queda reservado para instrumentados y Journeys, ver §10.2). La regla es **espejo exacto del paquete de la clase bajo test**, cambiando `main` por `test`:
+
+```text
+app/src/test/java/com/juanpvivas/aichatjp/
+├── ui/chat/
+│   └── ChatViewModelTest.kt
+└── data/repository/
+    └── ChatRepositoryImplTest.kt
+```
+
+**Reglas:**
+
+- **Nombre de archivo:** `<ClassName>Test.kt`. Se testea la implementación concreta, no la interfaz: si la clase es `ChatRepositoryImpl`, el test es `ChatRepositoryImplTest`, no `ChatRepositoryTest` (una interfaz no tiene lógica propia que testear).
+- **Ruta:** idéntica a la de `src/main/`, solo cambia el source set (`test` en vez de `main`).
+- **Un test por estado/caso**, no un único test gigante por clase — por ejemplo, `ChatViewModelTest` debería tener métodos como `emits loading then success when message sent`, `emits error when repository throws`, etc.
+
+### 10.2. Testing con Android CLI (Journeys)
 
 Además de los tests unitarios/instrumentados tradicionales, el proyecto usa **Journeys** (la funcionalidad de Android Studio/Android CLI basada en Gemini) para validar flujos completos de UI en lenguaje natural: se describe una secuencia de pasos (`<action>`) y el agente de IA los ejecuta sobre la app, tomando screenshots y razonando sobre lo que ve en pantalla, en vez de depender de selectores como Espresso/UI Automator.
 

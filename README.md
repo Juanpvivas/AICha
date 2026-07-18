@@ -115,7 +115,7 @@ Además de los tests unitarios estándar (`./gradlew test`), el proyecto valida 
 - Los archivos de journey (`.xml`) viven en `app/src/androidTest/jurney/`, dentro del `androidTest` source set.
 - Se ejecutan pidiéndole al agente de IA (Android CLI) que localice la carpeta y corra el journey correspondiente sobre un emulador/dispositivo. Al vivir dentro de `androidTest`, también se pueden correr vía Gradle si se integran a CI más adelante.
 
-Más detalle de la herramienta en [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §9.1.
+Más detalle de la herramienta en [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §10.2.
 
 ---
 
