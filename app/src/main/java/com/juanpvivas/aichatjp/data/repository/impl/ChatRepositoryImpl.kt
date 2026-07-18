@@ -87,6 +87,10 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getMessagesSync(conversationId: Long): List<ChatMessage> {
+        return messageDao.getMessagesByConversationSync(conversationId).map { it.toDomain() }
+    }
+
     override suspend fun createConversation(title: String): Long {
         return conversationDao.insertConversation(
             ConversationEntity(title = title)

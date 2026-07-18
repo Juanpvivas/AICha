@@ -9,6 +9,7 @@ interface ChatRepository {
     fun clearHistory()
     fun getConversations(): Flow<List<Conversation>>
     fun getMessages(conversationId: Long): Flow<List<ChatMessage>>
+    suspend fun getMessagesSync(conversationId: Long): List<ChatMessage>
     suspend fun createConversation(title: String): Long
     suspend fun deleteConversation(conversationId: Long)
 }
