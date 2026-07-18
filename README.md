@@ -41,10 +41,15 @@ Para correr el proyecto, es necesario contar con una API Key gratuita de Groq (n
 
 1.  Regístrate de forma gratuita en la consola oficial de desarrollo de Groq en [Groq Cloud](https://console.groq.com/) (se recomienda usar registro directo por Google/Gmail).
 2.  Genera una nueva clave en la sección **API Keys**.
-3.  Crea un archivo de propiedades o configura tu variable de entorno local en tu entorno de desarrollo Android con la variable:
+3.  **En tu máquina local**, crea un archivo llamado `local.properties` en la **raíz del proyecto** (al mismo nivel que `settings.gradle.kts` y `build.gradle.kts`), con el siguiente contenido:
+
 ```properties
-GROQ_API_KEY="TU_API_KEY_DE_GROQ_AQUI"
+GROQ_API_KEY=TU_API_KEY_DE_GROQ_AQUI
 ```
+
+> **Importante:** El archivo `local.properties` está en `.gitignore`, nunca subirá al repositorio — es tu configuración local y segura. Nunca hardcodees la API Key en el código fuente ni en archivos que se versionan.
+
+4.  Android Studio leerá automáticamente esta variable y la inyectará en `BuildConfig` (si está configurada en `build.gradle.kts`). Si tienes dudas sobre cómo acceder a ella desde el código, consulta la configuración de Gradle del proyecto.
 
 ### 3. Compilar y Ejecutar
 1. Abre el proyecto en Android Studio.

@@ -286,7 +286,9 @@ Pipeline mínimo sugerido (a adaptar al proveedor real):
 
 ## 13. Seguridad
 
-- La API Key de Groq nunca se sube al repositorio: vive en `local.properties` (ignorado por git) o en variables de entorno de CI.
+- **API Key de Groq:** nunca se sube al repositorio. Vive en `local.properties` en la raíz del proyecto (ignorado por git) o en variables de entorno de CI, según el entorno:
+    - **Local:** archivo `local.properties` (ver README.md §2 para instrucciones de creación).
+    - **CI/CD:** variables de entorno del proveedor (GitHub Secrets, GitLab CI variables, etc.), inyectadas al build sin pasar por archivos versionados.
 - R8/minificación habilitado en builds de release.
 
 ---
