@@ -10,7 +10,7 @@ Este documento especifica el comportamiento y los detalles específicos de la **
 
 - Interfaz para iniciar y mantener conversaciones con la IA.
 - Flujo síncrono visual: por cada mensaje enviado por el usuario, la IA debe devolver una respuesta en pantalla.
-- **Validación:** este flujo tiene un Journey (Android CLI) que lo cubre — `app/src/androidTest/jurney/send_message.xml` — que verifica la pantalla de chat, el envío de un mensaje y la aparición de la respuesta/loading. Ver `ARCHITECTURE.md` §9.1 para el detalle de la herramienta.
+- **Validación:** este flujo tiene un Journey (Android CLI) que lo cubre — `app/src/androidTest/jurney/send_message.xml` — que verifica la pantalla de chat, el envío de un mensaje y la aparición de la respuesta/loading. Ver `ARCHITECTURE.md` §10.2 para el detalle de la herramienta.
 
 ### 1.2. Contexto de la conversación
 
