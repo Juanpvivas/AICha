@@ -1,129 +1,107 @@
-# App de Chat con IA (Android)
+# AI Chat App (Android)
 
-Este es un cliente móvil nativo para Android que permite interactuar con modelos de lenguaje a través de **Groq**, ofreciendo una experiencia de chat fluida con persistencia de historial local. La integración se realiza mediante el SDK `openai-kotlin`, ya que Groq expone un endpoint compatible con el formato de peticiones de OpenAI (no se usa la API de OpenAI en sí).
+> 📖 [Lee esto en Español](./docs/README_ES.md) | English
 
----
-
-## 🚀 Requisitos Previos
-
-Antes de comenzar, asegúrate de cumplir con los siguientes requisitos en tu entorno de desarrollo:
-
-*   **Android Studio** Ladybug (o superior).
-*   **JDK 17** o superior.
-*   Una **API Key de Groq** válida (gratuita, ver sección de configuración).
+This is a native Android mobile client that allows interaction with language models through **Groq**, offering a smooth chat experience with local history persistence. The integration is done using the `openai-kotlin` SDK, as Groq exposes an endpoint compatible with OpenAI's request format (the OpenAI API itself is not used).
 
 ---
 
-## 🛠️ Tecnologías Clave
+## 🚀 Prerequisites
+
+Before you begin, make sure you meet the following requirements in your development environment:
+
+*   **Android Studio** Ladybug (or higher).
+*   **JDK 17** or higher.
+*   A valid **Groq API Key** (free, see configuration section).
+
+---
+
+## 🛠️ Key Technologies
 
 *   **Jetpack Compose** & **Material 3** (UI)
-*   **Kotlin** con Corrutinas y Flow.
+*   **Kotlin** with Coroutines and Flow.
 *   **MVVM** (Model-View-ViewModel).
-*   **Hilt** (Inyección de dependencias).
-*   **Room (con KSP)** para base de datos local.
-*   **openai-kotlin (Aallam)** para la integración con IA.
+*   **Hilt** (Dependency Injection).
+*   **Room (with KSP)** for local database.
+*   **openai-kotlin (Aallam)** for AI integration.
 
-*Para la arquitectura general del proyecto (capas, convenciones, DI, testing) consulta [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md). Para el detalle funcional de la feature de Chat, consulta [SPEC.md](./SPEC.md).*
+*For the general project architecture (layers, conventions, DI, testing) see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md). For the Chat feature functional details, see [SPEC.md](./SPEC.md).*
 
 ---
 
-## ⚙️ Configuración del Proyecto
+## ⚙️ Project Setup
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 ```bash
 git clone https://github.com/Juanpvivas/AICha.git
 cd AICha
 ```
 
-### 2. Obtener y configurar la API Key de Groq
+### 2. Get and configure the Groq API Key
 
-Para correr el proyecto, es necesario contar con una API Key gratuita de Groq (no de OpenAI).
+To run the project, you need a free Groq API Key (not OpenAI).
 
-1.  Regístrate de forma gratuita en la consola oficial de desarrollo de Groq en [Groq Cloud](https://console.groq.com/) (se recomienda usar registro directo por Google/Gmail).
-2.  Genera una nueva clave en la sección **API Keys**.
-3.  **En tu máquina local**, crea un archivo llamado `local.properties` en la **raíz del proyecto** (al mismo nivel que `settings.gradle.kts` y `build.gradle.kts`), con el siguiente contenido:
+1.  Sign up for free at the official Groq development console at [Groq Cloud](https://console.groq.com/) (recommended to use Google/Gmail direct sign-up).
+2.  Generate a new key in the **API Keys** section.
+3.  **On your local machine**, create a file named `local.properties` in the **project root** (at the same level as `settings.gradle.kts` and `build.gradle.kts`), with the following content:
 
 ```properties
-GROQ_API_KEY=TU_API_KEY_DE_GROQ_AQUI
+GROQ_API_KEY=YOUR_GROQ_API_KEY_HERE
 ```
 
-> **Importante:** El archivo `local.properties` está en `.gitignore`, nunca subirá al repositorio — es tu configuración local y segura. Nunca hardcodees la API Key en el código fuente ni en archivos que se versionan.
+> **Important:** The `local.properties` file is in `.gitignore`, it will never be uploaded to the repository — it's your local and secure configuration. Never hardcode the API Key in source code or versioned files.
 
-4.  Android Studio leerá automáticamente esta variable y la inyectará en `BuildConfig` (si está configurada en `build.gradle.kts`). Si tienes dudas sobre cómo acceder a ella desde el código, consulta la configuración de Gradle del proyecto.
+4.  Android Studio will automatically read this variable and inject it into `BuildConfig` (if configured in `build.gradle.kts`). If you have questions about how to access it from code, check the project's Gradle configuration.
 
-### 3. Compilar y Ejecutar
-1. Abre el proyecto en Android Studio.
-2. Deja que Gradle sincronice las dependencias (`Sync Project with Gradle Files`).
-3. Conecta un dispositivo físico o inicia un emulador Android.
-4. Presiona el botón **Run (Shift + F10)**.
+### 3. Build and Run
+1. Open the project in Android Studio.
+2. Let Gradle sync the dependencies (`Sync Project with Gradle Files`).
+3. Connect a physical device or start an Android emulator.
+4. Press the **Run (Shift + F10)** button.
 
 ---
 
-## 📂 Estructura del Código
+## 📂 Code Structure
 
 ```text
 app/
 ├── src/main/java/com/juanpvivas/aichatjp/
-│   ├── data/                 # Repositorios, Base de datos (Room) y cliente de Groq (openai-kotlin)
-│   ├── di/                   # Módulos de inyección de dependencias con Hilt
-│   ├── ui/                   # Capa de Presentación (Compose)
-│   │   ├── chat/             # Funcionalidad del Chat (Package-by-Feature)
-│   │   │   ├── ChatRoute.kt  # Conector con estado (ViewModel, Navegación)
-│   │   │   ├── ChatScreen.kt # Interfaz Stateless (Scaffold principal)
+│   ├── data/                 # Repositories, Database (Room) and Groq client (openai-kotlin)
+│   ├── di/                   # Dependency injection modules with Hilt
+│   ├── ui/                   # Presentation Layer (Compose)
+│   │   ├── chat/             # Chat Functionality (Package-by-Feature)
+│   │   │   ├── ChatRoute.kt  # State connector (ViewModel, Navigation)
+│   │   │   ├── ChatScreen.kt # Stateless Interface (main Scaffold)
 │   │   │   ├── ChatViewModel.kt
-│   │   │   ├── ChatUiState.kt# Estado de la pantalla (Loading, Success, Error)
-│   │   │   └── components/   # Composables específicos extraídos
-│   │   │       ├── ChatHeader.kt # Barra superior del chat
-│   │   │       ├── ChatContent.kt# Lista de mensajes (MessageBubble, etc.)
-│   │   │       └── ChatFooter.kt # Barra de entrada de texto (ChatInputBar)
-│   │   └── theme/            # Colores, tipografías y tema de Material 3
+│   │   │   ├── ChatUiState.kt# Screen state (Loading, Success, Error)
+│   │   │   └── components/   # Extracted specific Composables
+│   │   │       ├── ChatHeader.kt # Chat header bar
+│   │   │       ├── ChatContent.kt# Message list (MessageBubble, etc.)
+│   │   │       └── ChatFooter.kt # Text input bar (ChatInputBar)
+│   │   └── theme/            # Colors, typography, and Material 3 theme
 │   └── MainActivity.kt
 └── build.gradle.kts
 ```
 
 ---
 
-## 🤝 Flujo de Trabajo y Contribuciones
+## 🤝 Contributing
 
-Para mantener la rama principal (`main`) siempre estable y con código que compile perfectamente, seguimos un flujo de trabajo basado en **Feature Branches** (Ramas de Funcionalidad).
-
-### 🚫 Regla de Oro: Prohibido trabajar en `main`
-**Nunca** se debe escribir código o subir commits directamente a la rama `main`. Todo cambio, por pequeño que sea, debe seguir este proceso:
-
-1.  **Crear una rama de funcionalidad (Feature):**
-    Crea una rama desde `main` con un nombre descriptivo (usando minúsculas y guiones):
-    ```bash
-    git checkout main
-    git pull origin main
-    git checkout -b feature/nombre-de-tu-funcionalidad
-    ```
-
-2.  **Desarrollar y Compilar:**
-    Escribe tu código en la nueva rama. Antes de subir los cambios, recuerda compilar para validar que todo esté correcto:
-    ```bash
-    ./gradlew compileDebugKotlin
-    ```
-
-3.  **Subir la rama y crear un Pull Request (PR):**
-    Sube tu rama al repositorio remoto:
-    ```bash
-    git push origin feature/nombre-de-tu-funcionalidad
-    ```
-    Luego, abre un Pull Request en GitHub/GitLab hacia la rama `main` para que tu código sea revisado y fusionado.
+Want to contribute? Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for the full workflow: branch naming, commit conventions, testing requirements, and PR guidelines.
 
 ---
 
 ## 🧪 Testing
 
-Además de los tests unitarios estándar (`./gradlew test`), el proyecto valida flujos completos de UI con **Journeys** (Android CLI + Gemini): descripciones en lenguaje natural que un agente de IA ejecuta directamente sobre la app, tomando screenshots y verificando el resultado en pantalla.
+In addition to standard unit tests (`./gradlew test`), the project validates complete UI flows with **Journeys** (Android CLI + Gemini): natural language descriptions that an AI agent executes directly on the app, taking screenshots and verifying results on screen.
 
-- Los archivos de journey (`.xml`) viven en `app/src/androidTest/jurney/`, dentro del `androidTest` source set.
-- Se ejecutan pidiéndole al agente de IA (Android CLI) que localice la carpeta y corra el journey correspondiente sobre un emulador/dispositivo. Al vivir dentro de `androidTest`, también se pueden correr vía Gradle si se integran a CI más adelante.
+- Journey files (`.xml`) live in `app/src/androidTest/jurney/`, within the `androidTest` source set.
+- They are executed by asking the AI agent (Android CLI) to locate the folder and run the corresponding journey on an emulator/device. By living within `androidTest`, they can also be run via Gradle if integrated into CI later.
 
-Más detalle de la herramienta en [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §10.2.
+More details about the tool in [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) §10.2.
 
 ---
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto se distribuye bajo la licencia MIT.
+This project is distributed under the MIT license.
