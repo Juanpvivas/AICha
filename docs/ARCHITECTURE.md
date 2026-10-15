@@ -215,6 +215,8 @@ ui/
 
 - El cliente de IA vive en `data/remote/`, usando el SDK `openai-kotlin` apuntando al endpoint compatible de Groq.
 - El repositorio de chat es responsable de construir el contexto histórico completo de la conversación antes de cada llamada (ver `SPEC.md` para el detalle de comportamiento de esta feature).
+- El identificador de conversación se pasa explícitamente a cada envío; el repositorio no conserva una conversación activa mutable. El ViewModel cancela operaciones obsoletas y conserva los mensajes en el estado de error.
+- `GroqModelResolver` descubre y conserva en memoria los modelos compatibles. Ante `model_not_found`, la capa remota refresca el catálogo y reintenta una sola vez excluyendo el modelo rechazado (ver `SPEC.md` §2.1).
 - Errores de red/API (timeout, rate limit, error de modelo) se normalizan en un tipo de error propio antes de llegar al ViewModel; el ViewModel decide cómo se traduce a `UiState.Error`.
 - La API Key de Groq nunca se hardcodea: se lee desde `local.properties`/variables de entorno y se inyecta vía `BuildConfig` o Hilt, nunca se sube al repositorio.
 

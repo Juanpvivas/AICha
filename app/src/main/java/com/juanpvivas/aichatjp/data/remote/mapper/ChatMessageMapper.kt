@@ -6,10 +6,10 @@ import javax.inject.Inject
 
 class ChatMessageMapper @Inject constructor() {
 
-    fun toChatMessage(content: String): ChatMessage {
+    fun toChatMessage(message: com.juanpvivas.aichatjp.data.model.ChatMessage): ChatMessage {
         return ChatMessage(
-            role = ChatRole.User,
-            content = content
+            role = if (message.isFromUser) ChatRole.User else ChatRole.Assistant,
+            content = message.content
         )
     }
 }

@@ -57,7 +57,6 @@ class HistoryViewModel @Inject constructor(
 
     fun onNewConversation() {
         AppLogger.i("New conversation requested")
-        chatRepository.clearHistory()
         // La navegacion se maneja en el Route
     }
 

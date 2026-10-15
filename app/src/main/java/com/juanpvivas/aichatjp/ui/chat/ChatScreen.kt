@@ -94,6 +94,7 @@ fun ChatScreen(
                     Surface(color = MaterialTheme.colorScheme.surface) {
                         ChatInputBar(
                             onSend = onSendMessage,
+                            enabled = (uiState as? ChatUiState.Success)?.isLoading != true,
                             modifier = Modifier
                                 .navigationBarsPadding()
                                 .imePadding()
