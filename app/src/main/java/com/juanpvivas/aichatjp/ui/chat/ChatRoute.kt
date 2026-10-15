@@ -33,7 +33,10 @@ fun ChatRoute(
             chatViewModel.clearHistory()
             historyViewModel.onNewConversation()
         },
-        onDeleteConversation = historyViewModel::onDeleteConversation,
+        onDeleteConversation = { conversationId ->
+            chatViewModel.onConversationDeleted(conversationId)
+            historyViewModel.onDeleteConversation(conversationId)
+        },
         modifier = modifier
     )
 }

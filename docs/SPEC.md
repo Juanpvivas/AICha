@@ -17,6 +17,10 @@ Este documento especifica el comportamiento y los detalles específicos de la **
 - La IA debe recibir siempre como contexto histórico toda la conversación previa, para que la nueva respuesta sea coherente con el hilo actual.
 - Este historial se arma en la capa de repositorio (`data/repository/`, ver `ARCHITECTURE.md` §8), nunca se construye en la UI ni en el ViewModel.
 
+- Al reabrir una conversación, los nuevos mensajes reutilizan su identificador y el historial persistido en Room. Se conserva el rol de usuario o asistente y el orden por fecha e identificador.
+- Un fallo de red conserva los mensajes visibles y guardados; el siguiente envío continúa en la misma conversación.
+- Mientras se carga una conversación o se espera una respuesta, no se aceptan envíos adicionales. Iniciar, seleccionar o eliminar la conversación activa cancela el trabajo pendiente y descarta resultados obsoletos.
+
 ### 1.3. Historial de conversaciones
 
 - Menú lateral (Navigation Drawer) desplegable.
@@ -32,6 +36,14 @@ Este documento especifica el comportamiento y los detalles específicos de la **
 - El cliente se configura apuntando al `baseUrl` de Groq (no al de OpenAI) y con la API Key de Groq.
 
 ---
+
+### 2.1. Selección de modelos
+
+- Antes del primer envío se consulta el catálogo autenticado de Groq mediante `GET /openai/v1/models`.
+- El catálogo se conserva en memoria durante la vida del cliente. Solo se consideran familias conocidas de chat; se excluyen modelos de audio, guardas, embeddings y familias desconocidas.
+- Se prioriza Qwen, después GPT-OSS y después las demás familias compatibles, con desempate por identificador. No se fija una versión concreta ni se inventa un modelo de respaldo cuando no hay candidatos.
+- Ante `model_not_found`, se refresca el catálogo, se excluye el modelo rechazado y se reintenta una sola vez con otro candidato. Los errores de autenticación, límite de uso o red se propagan sin cambiar de modelo.
+- Si no hay modelos compatibles, se muestra el error conservando la conversación y el siguiente envío vuelve a consultar el catálogo.
 
 ## 3. Pantallas involucradas
 

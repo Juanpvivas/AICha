@@ -5,8 +5,7 @@ import com.juanpvivas.aichatjp.data.model.Conversation
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun sendMessage(userMessage: String): String
-    fun clearHistory()
+    suspend fun sendMessage(userMessage: String, conversationId: Long): String
     fun getConversations(): Flow<List<Conversation>>
     fun getMessages(conversationId: Long): Flow<List<ChatMessage>>
     suspend fun getMessagesSync(conversationId: Long): List<ChatMessage>

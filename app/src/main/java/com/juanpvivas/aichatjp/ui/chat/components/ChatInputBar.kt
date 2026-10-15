@@ -44,9 +44,10 @@ import com.juanpvivas.aichatjp.R
 fun ChatInputBar(
     onSend: (String) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     var text by remember { mutableStateOf("") }
-    val canSend = text.isNotBlank()
+    val canSend = enabled && text.isNotBlank()
 
     val sendBg by animateColorAsState(
         targetValue = if (canSend) {
@@ -66,7 +67,7 @@ fun ChatInputBar(
     )
 
     fun submit() {
-        if (text.isNotBlank()) {
+        if (canSend) {
             onSend(text.trim())
             text = ""
         }
